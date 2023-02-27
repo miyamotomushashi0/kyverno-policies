@@ -1,82 +1,57 @@
 # Default values for kyverno-policies.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 
-replicaCount: 1
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+# GENERAL POLICIES 
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+# Block Pod Exec by Namespace
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+blockPodExecByNamespacePolicy:
+  background: false
+  validationFailureAction: Enforce
+  excludedNamespaces:
+    - pci
+    - default
 
-podAnnotations: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
+# Restrict Image Registries
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+restrictImageRegistriesPolicy:
+  background: false
+  validationFailureAction: Enforce
+  registry: "hub.docker.io/* | bar.io/*"
 
-service:
-  type: ClusterIP
-  port: 80
 
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+# Enforce ETCD Encryption
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+enforceEtcdEncryptionPolicy:
+    background: false
+    validationFailureAction: Enforce
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
+# Restrict binding Cluster-Admin
 
-tolerations: []
+restrictBindingClusterAdminPolicy:
+    background: false
+    validationFailureAction: Enforce
+    role: "!cluster-admin"
 
-affinity: {}
+
+# Restriction Escalation Verbs in Roles
+
+restrictEscalationVerbsPolicy:
+  background: false
+  validationFailureAction: Enforce
+  verbs:
+      - bind
+      - impersonate
+      - escalate
+
+# Restrict access to secrets
+
+restrictSecretAccessPolicy:
+  background: false
+  validationFailureAction: Enforce
+  verbs:
+      - list
+      - view
+      - get
