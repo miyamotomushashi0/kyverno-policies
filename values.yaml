@@ -3,7 +3,7 @@
 
 # GENERAL POLICIES 
 
-# Block Pod Exec by Namespace
+# This policy ensures that any user cannot exec inside a pod in any of the namespaces which are not excluded. 
 
 blockPodExecByNamespacePolicy:
   background: false
@@ -13,7 +13,7 @@ blockPodExecByNamespacePolicy:
     - default
 
 
-# Restrict Image Registries
+# This policy ensures that images are only pulled from trusted registries. 
 
 restrictImageRegistriesPolicy:
   background: false
@@ -28,7 +28,7 @@ enforceEtcdEncryptionPolicy:
     validationFailureAction: Enforce
 
 
-# Restrict binding Cluster-Admin
+# This policy restricts the binding of the cluster-admin role to any subject. 
 
 restrictBindingClusterAdminPolicy:
     background: false
@@ -36,7 +36,7 @@ restrictBindingClusterAdminPolicy:
     role: "!cluster-admin"
 
 
-# Restriction Escalation Verbs in Roles
+# This policy restricts escalation verbs to be added in a Role
 
 restrictEscalationVerbsPolicy:
   background: false
@@ -46,7 +46,7 @@ restrictEscalationVerbsPolicy:
       - impersonate
       - escalate
 
-# Restrict access to secrets
+# This policy restricts certain actions to be performed on the 'Secret' object, specifically viewing the sensitive data inside the secrets. 
 
 restrictSecretAccessPolicy:
   background: false
@@ -55,3 +55,15 @@ restrictSecretAccessPolicy:
       - list
       - view
       - get
+
+
+# This policy prevents creating bindings to some of these groups including system:anonymous, system:unauthenticated, and system:masters.
+restrictBindingSystemGroupsPolicy:
+  background: false
+  validationFailureAction: Enforce
+
+
+# This policy blocks any Role or ClusterRole that contains a wildcard entry in the resources list found in any rule.
+restrictWildcardResourcesPolicy:
+  background: false
+  validationFailureAction: Enforce
