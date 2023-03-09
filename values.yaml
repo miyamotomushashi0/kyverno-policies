@@ -7,7 +7,7 @@
 
 blockPodExecByNamespacePolicy:
   background: false
-  validationFailureAction: Enforce
+  validationFailureAction: Audit
   excludedNamespaces:
     - pci
     - default
@@ -25,14 +25,14 @@ restrictImageRegistriesPolicy:
 
 enforceEtcdEncryptionPolicy:
     background: false
-    validationFailureAction: Enforce
+    validationFailureAction: Audit
 
 
 # This policy restricts the binding of the cluster-admin role to any subject. 
 
 restrictBindingClusterAdminPolicy:
     background: false
-    validationFailureAction: Enforce
+    validationFailureAction: Audit
     role: "!cluster-admin"
 
 
@@ -40,7 +40,7 @@ restrictBindingClusterAdminPolicy:
 
 restrictEscalationVerbsPolicy:
   background: false
-  validationFailureAction: Enforce
+  validationFailureAction: Audit
   verbs:
       - bind
       - impersonate
@@ -50,7 +50,7 @@ restrictEscalationVerbsPolicy:
 
 restrictSecretAccessPolicy:
   background: false
-  validationFailureAction: Enforce
+  validationFailureAction: Audit
   verbs:
       - list
       - view
@@ -60,10 +60,17 @@ restrictSecretAccessPolicy:
 # This policy prevents creating bindings to some of these groups including system:anonymous, system:unauthenticated, and system:masters.
 restrictBindingSystemGroupsPolicy:
   background: false
-  validationFailureAction: Enforce
+  validationFailureAction: Audit
 
 
 # This policy blocks any Role or ClusterRole that contains a wildcard entry in the resources list found in any rule.
 restrictWildcardResourcesPolicy:
   background: false
+  validationFailureAction: Audit
+
+
+blockUpdatesAndDeletes:
+  background: false
   validationFailureAction: Enforce
+  excludedNamespaces:
+    - test

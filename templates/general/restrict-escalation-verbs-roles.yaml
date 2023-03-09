@@ -16,7 +16,7 @@ metadata:
       use of these verbs in Role or ClusterRole resources.      
 spec:
   validationFailureAction: {{ .Values.restrictEscalationVerbsPolicy.validationFailureAction }}
-  background: {{ .Values.restrictEscalationVerbsPolicy.validationFailureAction }}
+  background: {{ .Values.restrictEscalationVerbsPolicy.background }}
   rules:
     - name: escalate
       match:
